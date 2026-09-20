@@ -2,7 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import { AppError } from '../../middleware/errorHandler.js';
 
 const MODEL_NAME = 'gemini-3.5-flash';
-const TIMEOUT_MS = 30000;
+const TIMEOUT_MS = 60000;
 
 const MAX_RETRIES = 3;
 const INITIAL_RETRY_DELAY_MS = 2000;
