@@ -1,18 +1,17 @@
 import { GoogleGenAI } from '@google/genai';
 import { AppError } from '../../middleware/errorHandler.js';
 
-const MODEL_NAME = 'gemini-3.6-flash';
+const MODEL_NAME = 'gemini-3.5-flash';
 const TIMEOUT_MS = 30000;
+
+const MAX_RETRIES = 3;
+const INITIAL_RETRY_DELAY_MS = 2000;
 
 let client = null;
 
 function getClient() {
   if (!process.env.GEMINI_API_KEY) {
-    throw new AppError(
-      'Missing GEMINI_API_KEY',
-      500,
-      'AI_CONFIG_ERROR'
-    );
+    throw new AppError('Missing GEMINI_API_KEY', 500, 'AI_CONFIG_ERROR');
   }
 
   if (!client) {
@@ -29,43 +28,83 @@ function withTimeout(promise, ms) {
     promise,
     new Promise((_, reject) =>
       setTimeout(
-        () =>
-          reject(
-            new AppError(
-              'AI request timed out',
-              504,
-              'AI_TIMEOUT'
-            )
-          ),
+        () => reject(new AppError('AI request timed out', 504, 'AI_TIMEOUT')),
         ms
       )
     ),
   ]);
 }
 
-/**
- * Calls Gemini and expects a JSON object.
- */
+function isRetryableError(err) {
+  const status = err?.status || err?.error?.code;
+
+  return (
+    status === 503 ||
+    status === 429 ||
+    status === 500 ||
+    status === 502 ||
+    status === 504
+  );
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function generateContentWithRetry(request) {
+  let lastError;
+
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      console.log(
+        `[Gemini] Request attempt ${attempt}/${MAX_RETRIES}`
+      );
+
+      return await withTimeout(
+        getClient().models.generateContent(request),
+        TIMEOUT_MS
+      );
+    } catch (err) {
+      lastError = err;
+
+      console.error(
+        `[Gemini] Attempt ${attempt} failed:`,
+        err?.message
+      );
+
+      if (!isRetryableError(err) || attempt === MAX_RETRIES) {
+        throw err;
+      }
+
+      const delay =
+        INITIAL_RETRY_DELAY_MS * Math.pow(2, attempt - 1);
+
+      console.log(
+        `[Gemini] Retrying in ${delay}ms...`
+      );
+
+      await sleep(delay);
+    }
+  }
+
+  throw lastError;
+}
+
 export async function callGeminiJSON({
   systemInstruction,
   prompt,
   temperature = 0.2,
 }) {
-  const ai = getClient();
-
   try {
-    const response = await withTimeout(
-      ai.models.generateContent({
-        model: MODEL_NAME,
-        contents: prompt,
-        config: {
-          systemInstruction,
-          temperature,
-          responseMimeType: 'application/json',
-        },
-      }),
-      TIMEOUT_MS
-    );
+    const response = await generateContentWithRetry({
+      model: MODEL_NAME,
+      contents: prompt,
+      config: {
+        systemInstruction,
+        temperature,
+        responseMimeType: 'application/json',
+      },
+    });
 
     const responseText = response?.text;
 
@@ -115,28 +154,20 @@ export async function callGeminiJSON({
   }
 }
 
-/**
- * Calls Gemini for plain text output.
- */
 export async function callGeminiText({
   systemInstruction,
   prompt,
   temperature = 0.2,
 }) {
-  const ai = getClient();
-
   try {
-    const response = await withTimeout(
-      ai.models.generateContent({
-        model: MODEL_NAME,
-        contents: prompt,
-        config: {
-          systemInstruction,
-          temperature,
-        },
-      }),
-      TIMEOUT_MS
-    );
+    const response = await generateContentWithRetry({
+      model: MODEL_NAME,
+      contents: prompt,
+      config: {
+        systemInstruction,
+        temperature,
+      },
+    });
 
     const text = response?.text;
 
