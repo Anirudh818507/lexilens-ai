@@ -1,0 +1,37 @@
+FREELANCE SERVICE AGREEMENT (VERSION A)
+
+1. PARTIES
+This Freelance Service Agreement ("Agreement") is entered into between BrightPath Digital Pvt. Ltd. ("Client") and the undersigned independent contractor ("Freelancer"), collectively the "Parties."
+
+2. SCOPE OF WORK
+Freelancer agrees to design and develop a responsive marketing website for Client, including up to five (5) pages, one (1) round of revisions per page, and basic on-page SEO setup, as further described in Exhibit A.
+
+3. PAYMENT
+Client shall pay Freelancer a total fee of ₹20,000, payable as follows: 50% (₹10,000) as an advance upon signing, and the remaining 50% (₹10,000) within seven (7) days of final delivery. Late payments beyond fifteen (15) days shall accrue interest at 2% per month on the outstanding balance.
+
+4. TERM
+This Agreement begins on the date of signing and continues until the completion of the Scope of Work, unless earlier terminated as provided herein.
+
+5. TERMINATION
+Either Party may terminate this Agreement by providing thirty (30) days' written notice to the other Party. If Client terminates without cause after work has begun, Client shall pay Freelancer for all work completed up to the date of termination.
+
+6. CONFIDENTIALITY
+Freelancer agrees to keep confidential all non-public business, technical, and financial information disclosed by Client during the engagement, and shall not disclose such information to any third party during the term of this Agreement and for a period of two (2) years following its termination.
+
+7. INTELLECTUAL PROPERTY
+Upon receipt of full payment, all intellectual property rights in the final deliverables shall transfer to Client. Until full payment is received, Freelancer retains all rights to the work product.
+
+8. LIABILITY
+Freelancer's total liability under this Agreement shall not exceed the total fees actually paid by Client under this Agreement.
+
+9. INDEMNIFICATION
+Freelancer agrees to indemnify and hold Client harmless from any third-party claims arising directly from Freelancer's gross negligence or willful misconduct.
+
+10. DISPUTE RESOLUTION
+Any dispute shall first be addressed through good-faith negotiation. If unresolved within thirty (30) days, the dispute shall be submitted to binding arbitration in Bengaluru, India.
+
+11. AUTOMATIC RENEWAL
+This Agreement does not automatically renew. A new agreement or order form is required for any work beyond the Scope of Work described above.
+
+12. GOVERNING LAW
+This Agreement shall be governed by the laws of India.
